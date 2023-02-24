@@ -22,6 +22,8 @@ class Model(nn.Module):
 
     def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor):
         outputs = self.bert(input_ids, attention_mask=attention_mask)
-        pooled_output = self.norm(outputs[1])
+        # pooled_output from: https://github.com/huggingface/transformers/blob/v4.26.1/src/transformers/models/distilbert/modeling_distilbert.py#L1126-L1127
+        hidden_state = outputs[0]
+        pooled_output = hidden_state[:, 0]
         x = F.relu(self.drop1(self.fc1(pooled_output)))
         return self.act(self.drop2(self.fc2(x)))

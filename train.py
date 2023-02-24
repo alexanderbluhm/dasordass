@@ -8,7 +8,7 @@ import torch.nn as nn
 from datasets import load_dataset
 from torch.utils.data import DataLoader, Dataset
 from tqdm.auto import tqdm
-from transformers import BertModel, BertTokenizer, get_scheduler
+from transformers import get_scheduler, DistilBertModel, DistilBertTokenizerFast
 from gddc.model import Model
 from gddc.masking import get_masked_inputs
 
@@ -18,13 +18,12 @@ generator = torch.Generator().manual_seed(73)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-bert: BertModel = BertModel.from_pretrained(
-    'bert-base-german-cased').to(device)
-tokenizer: BertTokenizer = BertTokenizer.from_pretrained(
-    'bert-base-german-cased')
+bert: DistilBertModel = DistilBertModel.from_pretrained(
+    'distilbert-base-german-cased').to(device)
+tokenizer: DistilBertTokenizerFast = DistilBertTokenizerFast.from_pretrained(
+    'distilbert-base-german-cased')
 
 mask = tokenizer.mask_token
-
 
 def mask_sentence(sentence: str, mask: str, max_length: int = 128):
     sentences, positons = get_masked_inputs(

@@ -3,7 +3,7 @@
 
 import torch
 from cog import BasePredictor, BaseModel, Input
-from transformers import BertTokenizer, BertModel, BertConfig
+from transformers import DistilBertTokenizerFast, DistilBertModel, DistilBertConfig
 from typing import List
 
 from gddc.model import Model
@@ -18,12 +18,12 @@ class Output(BaseModel):
 class Predictor(BasePredictor):
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""
-        model = Model(BertModel(BertConfig(30000)))
+        model = Model(DistilBertModel(DistilBertConfig(31102)))
         model.load_state_dict(torch.load("./model.pt", map_location='cpu'))
         model.eval()
         self.model = model
-        self.tokenizer: BertTokenizer = BertTokenizer.from_pretrained(
-            'bert-base-german-cased')
+        self.tokenizer: DistilBertTokenizerFast = DistilBertTokenizerFast.from_pretrained(
+            'distilbert-base-german-cased')
 
     def predict(
         self,
